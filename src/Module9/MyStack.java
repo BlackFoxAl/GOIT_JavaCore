@@ -16,7 +16,7 @@ peek() повертає перший елемент стеку
 pop() повертає перший елемент стеку та видаляє його з колекції
  */
 //LIFO
-NodeStack head;
+    NodeStack head;
     int count;
     MyStack() {
         count = 0;
