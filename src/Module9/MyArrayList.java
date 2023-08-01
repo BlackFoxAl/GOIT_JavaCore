@@ -4,10 +4,7 @@ class MyArrayList <E> {
     private E[] elements;
     private int size, capacity;
     private Object[] tempElements;
-/*    MyArrayList(Class<E> clazz, int capacity) {
-        elements = (E[]) Array.newInstance(clazz, capacity);
 
-    }*/
     MyArrayList(E[] elements) {
         this.elements = elements;
         size = elements.length;
@@ -40,7 +37,11 @@ class MyArrayList <E> {
         return this.size;
     }
     E get(int index) {
-        return elements[index];
+        if (index < size()) {
+            return elements[index];
+        }
+        System.out.println("Out of range");
+        return null;
     }
 }
 
@@ -70,5 +71,8 @@ class TestMyArrayList {
         for (int i = 0; i < arrListString.size(); i++) {
             System.out.println(arrListString.get(i));
         }
+        System.out.println("Index " + arrListString.size() + " element -> " + arrListString.get(arrListString.size()));
+        System.out.println("Size of array " + arrListString.size());
     }
+
 }

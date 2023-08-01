@@ -109,21 +109,20 @@ class NodeHashMap {
 
 class TestMyHashMap {
     public static void main(String[] args) {
-        int counter = 0;
-
+        // it is not array it is a one-linked list
         MyHashMap myHashMap = new MyHashMap();
         myHashMap.put(0,"First element");
         myHashMap.put(1,"Second element");
         myHashMap.put(2,"Third element");
         myHashMap.put(3,"Forth element");
         myHashMap.put(4,"Fifth element");
-        System.out.println("***Full array***");
+        System.out.println("***Full hashMap***");
         System.out.println("Size HashMap 5 -> " + myHashMap.size());
         for (int i = 0; i < myHashMap.size(); i++) {
            System.out.println(myHashMap.get(i));
         }
         myHashMap.remove(3);
-        System.out.println("***Delete forth element***");
+        System.out.println("***Delete element with key 3***");
         System.out.println("Size HashMap 4 -> " + myHashMap.size());
         for (int i = 0; i <= myHashMap.size(); i++) {
             System.out.println(myHashMap.get(i));
