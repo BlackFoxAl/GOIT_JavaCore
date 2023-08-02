@@ -1,6 +1,6 @@
 package Module9;
 
-class MyHashMap {
+class MyHashMap < K, V > {
 /*
 Написати свій клас MyHashMap як аналог класу HashMap.
 
@@ -16,122 +16,149 @@ clear() очищає колекцію
 size() повертає розмір колекції
 get(Object key) повертає значення (Object value) за ключем
  */
-    NodeHashMap head;
-    int count;
-    MyHashMap() {
-        count = 0;
-        head = null;
+    private static final int DEFAULT_CAPACITY = 16;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private NodeHashMap < K, V >  table[];
+    private int size;
+    private int capacity;
+    private float loadFactor;
+    public MyHashMap() {
+        this(DEFAULT_CAPACITY,DEFAULT_LOAD_FACTOR);
+    }
+    public MyHashMap(int capacity, float loadFactor) {
+        this.capacity = capacity;
+        this.loadFactor = loadFactor;
+        this.table = new NodeHashMap[capacity];
+    }
+    private static class NodeHashMap <K,V> {
+        final K key;
+        V value;
+        NodeHashMap <K,V> next;
+        public NodeHashMap(K key, V value, NodeHashMap next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
     }
 
-    boolean put(Object key, Object value) {
-        NodeHashMap current;
-        if (count == 0) {
-            NodeHashMap node = new NodeHashMap(key, value, null);
-            head = node;
-            count++;
-            return true;
-        }
-        current = head;
-        do {
-            if (current.key.equals(key)) {
-                System.out.println("An element with key " + key + " exists");
-                return false;
-            }
-            current = current.next;
-        } while (current != null);
-
-        NodeHashMap node = new NodeHashMap(key, value, head);
-        head = node;
-        count++;
-        return true;
+    private int hash(K key) {
+        return key.hashCode() % capacity;
     }
 
-    boolean remove(Object key) {
-        NodeHashMap current, previous;
-        if (head.key.equals(key) && head.next == null) {
-            clear();
-            return true;
-        }
-        if (head.key.equals(key)) {
-            head =  head.next;
-            count--;
-            return true;
-        }
-
-        previous = head;
-        current = head.next;
-        while (current != null) {
-            if (current.key.equals(key)) {
-                previous.next = current.next;
-                count--;
-                return true;
+    public void put(K key, V value) {
+        int index = hash(key);
+        NodeHashMap <K,V> node = table[index];
+        while (node != null) {
+            if (node.key.equals(key)) {
+                System.out.println("an element with the same key already exists");
+                return;
             }
-
-            current = current.next;
-            previous = previous.next;
+            node = node.next;
         }
-        System.out.println("An element with key " + key + "  not exists");
-        return false;
+        NodeHashMap <K,V> newNode = newNode(key, value, table[index]);
+        table[index] = newNode;
+        size++;
+        if (size > capacity * loadFactor) {
+            resize();
+        }
+    }
+
+    private void resize() {
+        int newCapacity = capacity * 2;
+        NodeHashMap <K,V> [] newTable = new NodeHashMap[newCapacity];
+        for (int i = 0; i < capacity; i++) {
+            NodeHashMap <K,V> node = table[i];
+            while (node != null) {
+                NodeHashMap <K,V> next = node.next;
+                int index = hash(node.key);
+                node.next = newTable[index];
+                newTable[index] = node;
+                node = next;
+            }
+        }
+        table = newTable;
+        capacity = newCapacity;
+    }
+
+    public void remove(K key) {
+        int index = hash(key);
+        NodeHashMap <K, V> node = table[index];
+        NodeHashMap <K, V> prev = null;
+        while (node != null) {
+            if (node.key.equals(key)) {
+                if (prev == null) {
+                    table[index] = node.next;
+                } else {
+                    prev.next = node.next;
+                }
+                size--;
+                return;
+            }
+            prev = node;
+            node = node.next;
+        }
+        System.out.println("element with such key does not exist");
     }
     void clear() {
-        count = 0;
-        head = null;
+        size = 0;
+        capacity = DEFAULT_CAPACITY;
+        loadFactor = DEFAULT_LOAD_FACTOR;
+        table = new NodeHashMap[capacity];
     }
     int size() {
-        return count;
+        return size;
     }
-    Object get(Object key) {
-
-        NodeHashMap current = head;
-        do {
-            if (current.key.equals(key)) {
-                return current.value;
+    public V get(K key) {
+        int index = hash(key);
+        NodeHashMap <K, V> node = table[index];
+        while (node != null) {
+            if (node.key.equals(key)) {
+                return node.value;
             }
-            current = current.next;
-
-        } while (current != null);
-        System.out.println("An element with key " + key + " not exists");
+            node = node.next;
+        }
+        System.out.println("element with such key does not exist");
         return null;
     }
 
-}
-
-class NodeHashMap {
-    Object value;
-    Object key;
-    NodeHashMap next;
-    NodeHashMap(Object key, Object value, NodeHashMap next) {
-        this.key = key;
-        this.value = value;
-        this.next = next;
+    NodeHashMap newNode(K key, V value, NodeHashMap next) {
+        return new NodeHashMap(key, value, next);
     }
 }
 
+
+
 class TestMyHashMap {
     public static void main(String[] args) {
-        // it is not array it is a one-linked list
+
         MyHashMap myHashMap = new MyHashMap();
-        myHashMap.put(0,"First element");
-        myHashMap.put(1,"Second element");
-        myHashMap.put(2,"Third element");
-        myHashMap.put(3,"Forth element");
-        myHashMap.put(4,"Fifth element");
+        myHashMap.put(1,1010);
+        myHashMap.put(2,2020);
+        myHashMap.put(3,3030);
+        myHashMap.put(4,4040);
+        myHashMap.put(5,5050);
         System.out.println("***Full hashMap***");
         System.out.println("Size HashMap 5 -> " + myHashMap.size());
-        for (int i = 0; i < myHashMap.size(); i++) {
+        for (int i = 1; i <= myHashMap.size(); i++) {
            System.out.println(myHashMap.get(i));
         }
         myHashMap.remove(3);
         System.out.println("***Delete element with key 3***");
         System.out.println("Size HashMap 4 -> " + myHashMap.size());
-        for (int i = 0; i <= myHashMap.size(); i++) {
+        for (int i = 1; i <= myHashMap.size(); i++) {
             System.out.println(myHashMap.get(i));
         }
+        System.out.println("***Delete element with key 3 again***");
         myHashMap.remove(3);
-        myHashMap.put(3,"Forth element");
-        for (int i = 0; i < myHashMap.size(); i++) {
+        myHashMap.put(3,3030);
+        for (int i = 1; i <= myHashMap.size(); i++) {
             System.out.println(myHashMap.get(i));
         }
-        myHashMap.put(3,"Sixth element");
+        myHashMap.put(3,6060);
+        myHashMap.clear();
+        System.out.println(myHashMap.size());
+        for (int i = 1; i <= myHashMap.size(); i++) {
+            System.out.println(myHashMap.get(i));
+        }
     }
 }
