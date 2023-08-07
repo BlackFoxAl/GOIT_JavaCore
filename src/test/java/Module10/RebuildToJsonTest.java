@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RebuildToJsonTest {
 
@@ -12,7 +13,7 @@ public class RebuildToJsonTest {
         String jsonFilename = "user.json";
         String[] nextDataLine;
         String dataLine;
-        ArrayList<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<User>();
         StringBuffer outputJson = new StringBuffer();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
             int counter = 0;
@@ -26,8 +27,8 @@ public class RebuildToJsonTest {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         };
+        ObjectMapper mapper = new ObjectMapper();
         try (PrintWriter out = new PrintWriter(jsonFilename)) {
-            ObjectMapper mapper = new ObjectMapper();
                out.write(mapper.writeValueAsString(users));
         } catch (Exception e) {
             System.out.println(e.getMessage());

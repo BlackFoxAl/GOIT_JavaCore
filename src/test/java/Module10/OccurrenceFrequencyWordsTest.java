@@ -12,7 +12,7 @@ public class OccurrenceFrequencyWordsTest {
         String filename = "word.txt";
         String dataLine;
         String delimeter = "\\s+";
-        HashMap <String , Integer> wordsHashMap = new HashMap <>();
+        Map <String , Integer> wordsHashMap = new HashMap <>();
         StringBuffer outputJson = new StringBuffer();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
             while ((dataLine = bufferedReader.readLine()) != null) {
