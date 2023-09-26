@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "name": "Oleksandr K",
+  "username": "Fox",
+  "email": "Fox@fox.ua",
+  "address": {
+    "street": "Moor",
+    "suite": "1",
+    "city": "Borough",
+    "zipcode": "NG11",
+    "geo": {
+      "lat": "-00.0001",
+      "lng": "00.0001"
+    }
+  },
+  "phone": "0712345 6789",
+  "website": "fox.org",
+  "company": {
+    "name": "fox_vision",
+    "catchPhrase": "May the force be with you",
+    "bs": "be happy"
+  }
+}
